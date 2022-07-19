@@ -1,0 +1,30 @@
+From 746ae5fcf6fdc519dcf8234124950498fe007f96 Mon Sep 17 00:00:00 2001
+Message-Id: <746ae5fcf6fdc519dcf8234124950498fe007f96.1658218295.git.maciek@thing.com>
+From: Maciej Borzecki <maciek@thing.com>
+Date: Tue, 19 Jul 2022 10:09:18 +0200
+Subject: [PATCH] profiles: do not override LD_LIBRARY_PATH
+
+When building under Yocto, libpseudo.so is injected through
+LD_PRELOAD, while LD_LIBRARY_PATH is set to include locations where
+the shared object existst. Overriding LD_LIBRARY_PATH makes the
+preload fail and thus the ownership of the profiles is not tracked
+anymore.
+
+Signed-off-by: Maciej Borzecki <maciek@thing.com>
+---
+ profiles/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/profiles/Makefile b/profiles/Makefile
+index 7342e5c4..c7d1896f 100644
+--- a/profiles/Makefile
++++ b/profiles/Makefile
+@@ -43,7 +43,7 @@ else
+     # PYTHON_DIST_BUILD_PATH based on libapparmor/swig/python/test/Makefile.am
+     PYTHON_DIST_BUILD_PATH = ../libraries/libapparmor/swig/python/build/$$($(PYTHON) -c "import sysconfig; print(\"lib.%s-%s\" %(sysconfig.get_platform(), sysconfig.get_python_version()))")
+     LIBAPPARMOR_PATH=../libraries/libapparmor/src/.libs/
+-    LD_LIBRARY_PATH=$(LIBAPPARMOR_PATH):$(PYTHON_DIST_BUILD_PATH)
++    LD_LIBRARY_PATH := $(LIBAPPARMOR_PATH):$(PYTHON_DIST_BUILD_PATH):$(LD_LIBRARY_PATH)
+     PYTHONPATH=../utils/:$(PYTHON_DIST_BUILD_PATH)
+     PARSER?=../parser/apparmor_parser
+     # use ../utils logprof

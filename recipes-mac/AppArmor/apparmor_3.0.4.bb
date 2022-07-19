@@ -20,6 +20,7 @@ SRC_URI = " \
     file://0001-Makefile.am-suppress-perllocal.pod.patch \
     file://0001-Makefile-fix-hardcoded-installation-directories.patch \
     file://0001-rc.apparmor.debian-add-missing-functions.patch \
+    file://0001-profiles-do-not-override-LD_LIBRARY_PATH.patch \
     "
 
 SRCREV = "9799fbde997820bb12a49e292356f7a6ce12e972"
